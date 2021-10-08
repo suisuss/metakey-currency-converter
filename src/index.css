@@ -5,6 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url(https://raw.githubusercontent.com/sushiswap/sushi-content/master/images/neon-street.jpg);
+  height: 100vh;
+  background-position: center center;
 }
 
 code {
