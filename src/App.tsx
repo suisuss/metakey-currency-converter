@@ -32,7 +32,7 @@ const App: React.FC = () => {
         <Text variant="layout.title" sx={{ justifyContent: "center", alignContent: "center", width: "100%", ml: "1rem"}}>METAKEY CURRENCY CONVERTER</Text>
 
       {/*Converter*/}
-      <Card variant="layout.card" sx={{ alignItems: "center", justifyContent: "center", m: ["1rem", "2rem"] }}>
+      <Card variant="layout.card" sx={{ alignItems: "center", justifyContent: "center", m: ["1rem", "1.5rem"] }}>
         <Box variant="layout.cardInner">
           <Box variant="layout.cardInner.converterAlign">
             {/* Left/Top */}

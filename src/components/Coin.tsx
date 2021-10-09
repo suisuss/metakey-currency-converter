@@ -32,7 +32,7 @@ export const Coin: React.FC<CoinInterface> = ({
   return (
     <Box variant="layout.coinRow" sx={{ backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { setSelectedCoin(coin) }}>
       <Flex sx={{ ml: "1rem", diplay: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-        <Image src={coin.symbol !== 'usdt' ? coin.image : usdt} sx={{ borderRadius: "50%", maxWidth: ["25px", "30px", "35px", "50px"], maxHeight: ["35px", "50px"], diplay: "flex", flex: 1 }} alt='crypto' />
+        <Image src={coin.symbol !== 'usdt' ? coin.image : usdt} sx={{ borderRadius: "50%", maxWidth: ["25px", "30px", "35px", "40px"], maxHeight: ["25px", "30px", "35px", "40px"], diplay: "flex", flex: 1 }} alt='crypto' />
       </Flex>
 
       <Flex sx={{ ml: "1.5rem", diplay: "flex", alignItems: "center", flex: 1 }}>

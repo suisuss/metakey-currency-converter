@@ -59,7 +59,7 @@ export const theme: Theme = {
     coinRow: {
       display: "flex",
       flexDirection: "row",
-      height: ["70px", "80px", "90px"],
+      height: ["70px", "70px", "70px"],
       maxWidth: "100%",
 
       text: {
@@ -87,12 +87,12 @@ export const theme: Theme = {
       height: "100%",
       borderRadius: "18px",
       justifyContent: "center",
-      padding: ["1.10rem", "1.25rem", "1.25rem", "1.25rem"],
+      padding: ["1rem", "1rem", "1rem", "1rem"],
 
       box: {
         display: "flex",
-        borderRadius: "18px",
-        height: "80px",
+        borderRadius: "16px",
+        height: "70px",
         padding: "0.5rem 1rem 1rem 0.8rem",
         flexDirection: "column",
         width: ["100%", "100%", "50%", "50%", "50%"],
