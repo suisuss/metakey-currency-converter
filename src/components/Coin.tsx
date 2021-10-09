@@ -29,6 +29,7 @@ export interface CoinInterface {
 export const Coin: React.FC<CoinInterface> = ({
   coin, selectedCoin, setSelectedCoin
 }) => {
+  
   return (
     <Box variant="layout.coinRow" sx={{ backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { setSelectedCoin(coin) }}>
       <Flex sx={{ ml: "1rem", diplay: "flex", alignItems: "center", justifyContent: "flex-start" }}>
