@@ -4,6 +4,7 @@ import { CoinInterface, CoinTable } from './components/Coin';
 import { Box, Button, Card, Container, Image, Input, Text } from '@theme-ui/components';
 import arrows from './assets/svg/arrows.svg'
 import { decimalPlaces } from './utils';
+import './index.css'
 
 
 const App: React.FC = () => {
@@ -110,12 +111,19 @@ const App: React.FC = () => {
     direction ? inputElementRight.value = inputElementRight.defaultValue : inputElementLeft.value = inputElementLeft.defaultValue
   }
 
+  const clear = () => {
+    inputElementRight.value = inputElementRight.defaultValue
+    inputElementLeft.value = inputElementLeft.defaultValue
+    setError(false)
+  }
+
   const handleInput = (e: any, direction: boolean) => {
     setError(false)
     var targetAsString = e.target.value.toString()
     if (targetAsString === "") { targetAsString = "0.000"}
+    if (targetAsString.includes('-')) {inputError(direction)}
 
-    decimalPlaces(targetAsString) <= 4 && /^-?\d+(?:[.,]\d*?)?$/g.test(targetAsString) && selectedCoin 
+    (decimalPlaces(targetAsString) <= 4 && /^-?\d+(?:[.,]\d*?)?$/g.test(targetAsString) && selectedCoin && targetAsString.length <= 15) 
       ? calculateResult(direction, targetAsString)
       : inputError(direction)
   }
@@ -131,19 +139,29 @@ const App: React.FC = () => {
           <Box variant="layout.cardInner.converterAlign">
             {/* Left/Top */}
             <Box variant="layout.cardInner.box" sx={{ backgroundColor: error ? "#D8000C" : "#202231", marginRight: ["0px", "30px", "30px", "30px", "30px"] }}>
-              <Box sx={{ display: "flex", width: ["100%"] }}>
-                <Text variant="layout.cardInner.box.text" sx={{ justifyContent: "flex-start" }}>
+              <Box sx={{ display: "flex", width: ["100%"]}}>
+                <Text variant="layout.cardInner.box.text" sx={{ justifyContent: "flex-start",  }}>
                   {!selectedCoin ? "Please Select A Currency" : selectedCoin.symbol.toUpperCase()}
                 </Text>
               </Box>
-              <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-                <Input id="inputLeft" variant="layout.input" type="text" onChange={(e:any) => {handleInput(e, true)}} defaultValue={"0.0000"} />
+              <Box sx={{ display: "flex", width: "100%", alignItems: "center"}}>
+                <input id="inputLeft" style={{
+                  textAlign: "center",
+                  width: "100%",
+                  fontSize: "24px",
+                  border: "none",
+                  outline: 'none',
+                  paddingTop: "0rem",
+                  backgroundColor: "transparent",
+                  color: "white"
+
+                }} type="number" onChange={(e:any) => {handleInput(e, true)}} defaultValue={"0.0000"} />
               </Box>
             </Box>
 
             {/* Notch */}
-            <Box variant="layout.notch" sx={{ backgroundColor: error ? "#D8000C" : "#202231" }}>
-              <Image src={arrows} variant="layout.notch.icon" />
+            <Box variant="layout.notch" sx={{ backgroundColor: error ? "#D8000C" : "#202231" }} onClick={() => {clear()}}>
+              <Image src={arrows} variant="layout.notch.icon"/>
             </Box>
 
             {/* Right/Bottom */}
@@ -154,7 +172,17 @@ const App: React.FC = () => {
                 </Text>
               </Box>
               <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-                <Input id="inputRight" variant="layout.input" type="text" onChange={(e:any) => {handleInput(e, false)}} defaultValue={"0.0000"} />
+                <input id="inputRight" style={{
+                  textAlign: "center",
+                  width: "100%",
+                  fontSize: "24px",
+                  border: "none",
+                  outline: 'none',
+                  paddingTop: "0rem",
+                  backgroundColor: "transparent",
+                  color: "white"
+
+                }} type="number" onChange={(e:any) => {handleInput(e, false)}} defaultValue={"0.0000"} />
               </Box>
             </Box>
 

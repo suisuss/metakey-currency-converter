@@ -27,6 +27,7 @@ export const theme: Theme = {
       fontSize: "24px",
       border: "none",
       outline: 'none',
+      paddingTop: "0rem"
     },
 
     notch: {
