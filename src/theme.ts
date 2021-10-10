@@ -12,23 +12,27 @@ export const theme: Theme = {
 
   layout: {
 
+    button: {
+      backgroundImage: () => "radial-gradient(circle at left top, rgb(1, 110, 218), rgb(217, 0, 192))",
+    },
+
     search: {
       marginBottom: "1rem",
       display: "flex",
-      justifyContent: "center",
-      alignContent: "center",
     },
 
     input: {
       textAlign: "center",
       width: ["100%", "100%", "100%"],
       fontSize: "24px",
-      border: "none"
+      border: "none",
+      outline: 'none',
     },
 
     notch: {
       marginX: ["0px", "-50px", "-50px", "-50px", "-50px"],
       marginY: ["-15px", "-15px", "-15px", "0px"],
+      backgroundImage: () => "radial-gradient(circle at left top, rgb(1, 110, 218), rgb(217, 0, 192))",
       borderRadius: "50%",
       minWidth: ["60px", "60px", "60px", "80px"],
       minHeight: ["60px", "60px", "60px", "80px"],
@@ -85,7 +89,7 @@ export const theme: Theme = {
       backgroundImage: () => "radial-gradient(circle at left top, rgb(1, 110, 218), rgb(217, 0, 192))",
       padding: ["4px", "4px", "5px", "5px"],
       borderRadius: "18px",
-      width: ["100%", "400px", "500px", "640px"]
+      width: ["100%", "100%", "500px", "640px"]
     },
 
     cardInner: {
@@ -105,7 +109,7 @@ export const theme: Theme = {
         width: ["100%", "100%", "50%", "50%", "50%"],
 
         text: {
-          fontSize: ["0.8rem", "1rem", "1.25"],
+          fontSize: ["0.9rem", "0.9rem", "1rem", "1.25"],
           display: "flex",
           flex: 1
         }
