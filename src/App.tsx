@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { CoinInterface, CoinTable } from './components/Coin';
 import { Box, Button, Card, Container, Image, Input, Text } from '@theme-ui/components';
 import arrows from './assets/svg/arrows.svg'
 import { decimalPlaces } from './utils';
 import './index.css'
+import gsap, { Power3 } from 'gsap';
 
 
 const App: React.FC = () => {
@@ -18,6 +19,10 @@ const App: React.FC = () => {
   const inputElementLeft = document.getElementById('inputLeft') as HTMLInputElement;
   const inputElementRight = document.getElementById('inputRight') as HTMLInputElement;
   const inputElementSearch = document.getElementById('inputSearch') as HTMLInputElement;
+
+  const divRef = useRef(null);
+  const divRef1 = useRef(null);
+  const divRef2 = useRef(null);
 
   useEffect(() => {
     if (inputElementLeft && inputElementRight) {
@@ -82,10 +87,19 @@ const App: React.FC = () => {
     setSelectedCoin(coin)
   }
 
+  const animationOffset = 30
 
   useEffect(() => {
     fetchData(true)
     setInterval(() => fetchData(false), 6000)
+
+    gsap.to([divRef.current, divRef1.current, divRef2.current], 3, {
+      opacity: 1,
+      y: animationOffset,
+      ease: Power3.easeOut,
+      stagger: {each: 0.25}
+    })
+
     // eslint-disable-next-line
   }, []);
 
@@ -131,10 +145,10 @@ const App: React.FC = () => {
   return (
     <Container variant="layout.container">
 
-      <Text variant="layout.title" sx={{ justifyContent: "center", alignContent: "center", width: "100%", ml: "1rem" }}>METAKEY CURRENCY CONVERTER</Text>
+      <Text ref={divRef} variant="layout.title" sx={{top: -animationOffset, position: "relative", justifyContent: "center", alignContent: "center", width: "100%", ml: "1rem", opacity: 0 }}>METAKEY CURRENCY CONVERTER</Text>
 
       {/*Converter*/}
-      <Card variant="layout.card" sx={{ alignItems: "center", justifyContent: "center", m: ["1rem", "1.5rem"] }}>
+      <Card ref={divRef1} variant="layout.card" sx={{ top: -animationOffset, position: "relative", opacity: 0, alignItems: "center", justifyContent: "center", m: ["1rem", "1.5rem"] }}>
         <Box variant="layout.cardInner">
           <Box variant="layout.cardInner.converterAlign">
             {/* Left/Top */}
@@ -191,7 +205,7 @@ const App: React.FC = () => {
       </Card>
 
       {/*Currencies*/}
-      <Card variant="layout.card" sx={{ height: "auto" }}>
+      <Card ref={divRef2} variant="layout.card" sx={{ top: -animationOffset, position: "relative", height: "auto", opacity: 0 }}>
         <Box id="test" variant="layout.cardInnerCurrencies">
           <Box variant="layout.search">
             <Input id="inputSearch" sx={{ width: "100%" }} type='text' onChange={handleSearchChange} placeholder='Search' />
@@ -202,7 +216,7 @@ const App: React.FC = () => {
               }
             }}>Clear</Button>
           </Box>
-          <CoinTable coins={coinsDisplayed} selectedCoin={selectedCoin} handleSelect={handleSelect} />
+          {coinsDisplayed.length > 0 && <CoinTable coins={coinsDisplayed} selectedCoin={selectedCoin} handleSelect={handleSelect} />}
         </Box>
       </Card>
 

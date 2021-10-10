@@ -1,7 +1,8 @@
 import { Box, Flex, Image, Text } from '@theme-ui/components';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { abbreviateCurrencyAmount } from '../utils';
 import usdt from '../assets/svg/asset_USDT.svg';
+import gsap, { Power3 } from 'gsap';
 
 export interface CoinInterface {
   name: string
@@ -73,9 +74,20 @@ export interface CoinRowInterface {
 export const CoinRow: React.FC<CoinRowInterface> = ({
   coin, selectedCoin, handleSelect
 }) => {
+
+  const divRef = useRef(null);
+  const animationOffset = 10
+  useEffect(() => {
+    gsap.to(divRef.current, 2.5, {
+      opacity: 1,
+      delay: 0.2,
+      y: -animationOffset,
+      ease: Power3.easeOut,
+    })
+  }, [])
   
   return (
-    <Box variant="layout.coinRow" sx={{ backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { handleSelect(coin) }}>
+    <Box ref={divRef} variant="layout.coinRow" sx={{ opacity: 0, position: "relative", top: animationOffset,  backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { handleSelect(coin) }}>
       <Flex sx={{ ml: "1rem", diplay: "flex", alignItems: "center", justifyContent: "flex-start" }}>
         <Image src={coin.symbol !== 'usdt' ? coin.image : usdt} sx={{ borderRadius: "50%", maxWidth: ["25px", "30px", "35px", "40px"], maxHeight: ["25px", "30px", "35px", "40px"], diplay: "flex", flex: 1 }} alt='crypto' />
       </Flex>
