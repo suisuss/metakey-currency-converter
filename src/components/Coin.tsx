@@ -14,47 +14,6 @@ export interface CoinInterface {
 }
 
 
-export interface CoinRowInterface {
-  coin: CoinInterface
-  selectedCoin: CoinInterface
-  setSelectedCoin: Function
-}
-
-export const CoinRow: React.FC<CoinRowInterface> = ({
-  coin, selectedCoin, setSelectedCoin
-}) => {
-  
-  return (
-    <Box variant="layout.coinRow" sx={{ backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { setSelectedCoin(coin) }}>
-      <Flex sx={{ ml: "1rem", diplay: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-        <Image src={coin.symbol !== 'usdt' ? coin.image : usdt} sx={{ borderRadius: "50%", maxWidth: ["25px", "30px", "35px", "40px"], maxHeight: ["25px", "30px", "35px", "40px"], diplay: "flex", flex: 1 }} alt='crypto' />
-      </Flex>
-
-      <Flex sx={{ ml: "1.5rem", diplay: "flex", alignItems: "center", flex: 1 }}>
-        <Text variant="layout.coinRow.text">{coin.symbol.toUpperCase()}</Text>
-      </Flex>
-
-      <Flex sx={{ mr: "1rem", diplay: "flex", flex: 1, alignItems: "center" }}>
-        <Text variant="layout.coinRow.text">${abbreviateCurrencyAmount(parseFloat(coin.price).toPrecision(4))}</Text>
-      </Flex>
-
-      <Box sx={{ mr: "1.5rem", display: ["none", "flex", "flex", "flex"], flex: 1, alignItems: "center" }}>
-        <Text variant="layout.coinRow.text">${abbreviateCurrencyAmount(coin.volume)}</Text>
-      </Box>
-
-
-      <Box sx={{ mr: "1rem", display: "flex", justifyContent: "flex-end", flex: 1, alignItems: "center" }}>
-        <Text variant="layout.coinRow.text">
-          ${abbreviateCurrencyAmount(coin.marketcap)}
-        </Text>
-      </Box>
-    </Box>
-  );
-};
-
-export default CoinRow;
-
-
 interface CoinTableInterface {
 
   coins: CoinInterface[]
@@ -67,10 +26,10 @@ interface CoinTableInterface {
     image: string
     priceChange: number
   }
-  setSelectedCoin: Function
+  handleSelect: Function
 }
 
-export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, setSelectedCoin}) => {
+export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, handleSelect}) => {
   return (
     <>
       <Box variant="layout.coinRow" sx={{ maxHeight: "40px", mb: "1rem"}}>
@@ -98,9 +57,49 @@ export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, se
       </Box>
       {coins.map((coin: CoinInterface) => {
         return (
-          <CoinRow key={coin.name} coin={coin} selectedCoin={selectedCoin} setSelectedCoin={setSelectedCoin} />
+          <CoinRow key={coin.name} coin={coin} selectedCoin={selectedCoin} handleSelect={handleSelect} />
         );
       })}
     </>
   )
 } 
+
+export interface CoinRowInterface {
+  coin: CoinInterface
+  selectedCoin: CoinInterface
+  handleSelect: Function
+}
+
+export const CoinRow: React.FC<CoinRowInterface> = ({
+  coin, selectedCoin, handleSelect
+}) => {
+  
+  return (
+    <Box variant="layout.coinRow" sx={{ backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { handleSelect(coin) }}>
+      <Flex sx={{ ml: "1rem", diplay: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+        <Image src={coin.symbol !== 'usdt' ? coin.image : usdt} sx={{ borderRadius: "50%", maxWidth: ["25px", "30px", "35px", "40px"], maxHeight: ["25px", "30px", "35px", "40px"], diplay: "flex", flex: 1 }} alt='crypto' />
+      </Flex>
+
+      <Flex sx={{ ml: "1.5rem", diplay: "flex", alignItems: "center", flex: 1 }}>
+        <Text variant="layout.coinRow.text">{coin.symbol.toUpperCase()}</Text>
+      </Flex>
+
+      <Flex sx={{ mr: "1rem", diplay: "flex", flex: 1, alignItems: "center" }}>
+        <Text variant="layout.coinRow.text">${abbreviateCurrencyAmount(parseFloat(coin.price).toPrecision(4))}</Text>
+      </Flex>
+
+      <Box sx={{ mr: "1.5rem", display: ["none", "flex", "flex", "flex"], flex: 1, alignItems: "center" }}>
+        <Text variant="layout.coinRow.text">${abbreviateCurrencyAmount(coin.volume)}</Text>
+      </Box>
+
+
+      <Box sx={{ mr: "1rem", display: "flex", justifyContent: "flex-end", flex: 1, alignItems: "center" }}>
+        <Text variant="layout.coinRow.text">
+          ${abbreviateCurrencyAmount(coin.marketcap)}
+        </Text>
+      </Box>
+    </Box>
+  );
+};
+
+export default CoinRow;

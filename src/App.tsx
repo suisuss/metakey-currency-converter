@@ -12,10 +12,7 @@ const App: React.FC = () => {
   const [selectedCoin, setSelectedCoin] = useState<null | any>(null);
   const [search, setSearch] = useState<string>('');
 
-  const [direction, setDirection] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [left, setLeft] = useState<number>(0.00);
-  const [right, setRight] = useState<number>(0.000);
 
   const inputElementLeft = document.getElementById('inputLeft') as HTMLInputElement;
   const inputElementRight = document.getElementById('inputRight') as HTMLInputElement;
@@ -25,8 +22,6 @@ const App: React.FC = () => {
     if (inputElementLeft && inputElementRight) {
       inputElementLeft.value = inputElementLeft.defaultValue
       inputElementRight.value = inputElementRight.defaultValue
-      setLeft(0.0000)
-      setRight(0.0000)
     }
   }, [inputElementLeft, inputElementRight])
 
@@ -39,7 +34,7 @@ const App: React.FC = () => {
         : allCoins.slice(0, 4))
   }, [allCoins, search])
 
-  const fetchData = () => {
+  const fetchData = (first: boolean) => {
 
     axios.get(
       'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false'
@@ -56,63 +51,70 @@ const App: React.FC = () => {
             priceChange: coin.price_change_percentage_24h,
           }
         }));
+        if (first) {
+          setSelectedCoin(
+            {
+              name: res.data[0].name,
+              price: res.data[0].current_price,
+              symbol: res.data[0].symbol,
+              marketcap: res.data[0].total_volume,
+              volume: res.data[0].market_cap,
+              image: res.data[0].image,
+              priceChange: res.data[0].price_change_percentage_24h,
+            }
+          );
+        }
       })
       .catch((error: any) => console.log(error));
-
-
   }
+
+  const handleSelect = (coin: CoinInterface) => {
+
+    const amountAsFloat = parseFloat(inputElementLeft.value);
+    const selectedCoinPriceAsFloat = parseFloat(coin.price);
+    if (amountAsFloat > 0.00 && inputElementRight) {
+      inputElementRight.value = (selectedCoinPriceAsFloat * amountAsFloat).toFixed(4)
+    }
+    setSelectedCoin(coin)
+  }
+
 
   useEffect(() => {
-    fetchData()
-    setInterval(() => fetchData(), 6000)
+    fetchData(true)
+    setInterval(() => fetchData(false), 6000)
+    // eslint-disable-next-line
   }, []);
 
-  const calculateResult = (amount: string) => {
+  const calculateResult = (direction: boolean, amount: string) => {
     const amountAsFloat = parseFloat(amount);
     const selectedCoinPriceAsFloat = parseFloat(selectedCoin.price);
-    if (!direction && amountAsFloat > 0.00) {
-      setLeft(selectedCoinPriceAsFloat * amountAsFloat);
-    }
-    if (direction && selectedCoinPriceAsFloat > 0.00 && amountAsFloat > 0.00) {
-      setRight(amountAsFloat / selectedCoinPriceAsFloat);
-    }
-  }
 
-  const handleNotch = (_: any) => {
-    setDirection(!direction)
-    setError(false)
-    if (inputElementLeft && inputElementRight) {
-      if (!error) {
-        setLeft(parseFloat(inputElementLeft.value))
-        inputElementLeft.value = right.toFixed(4)
-        inputElementRight.value = left.toFixed(4)
+    if (inputElementRight && inputElementLeft && selectedCoinPriceAsFloat >= 0.00 && amountAsFloat >= 0.00 ) {
+      if (direction) {
+        inputElementRight.value = (selectedCoinPriceAsFloat * amountAsFloat).toFixed(4)
       } else {
-        setError(false)
-        setLeft(0.000)
-        setRight(0.000)
-        inputElementLeft.value = inputElementLeft.defaultValue
-        inputElementRight.value = inputElementRight.defaultValue
+        inputElementLeft.value = (amountAsFloat / selectedCoinPriceAsFloat).toFixed(4)
       }
     }
   }
-
 
   const handleSearchChange = (e: any) => {
     setSearch(e.target.value)
   };
 
-  const handleInputLeft = (e: any) => {
-    setError(false)
-    setLeft(0.00)
-    const targetAsString = e.target.value.toString()
-    decimalPlaces(targetAsString) <= 4 && !/[a-zA-Z]/g.test(targetAsString) && selectedCoin ? calculateResult(targetAsString) : setError(true)
+  const inputError = (direction: boolean) => {
+    setError(true)
+    direction ? inputElementRight.value = inputElementRight.defaultValue : inputElementLeft.value = inputElementLeft.defaultValue
   }
 
-  const handleInputRight = (e: any) => {
+  const handleInput = (e: any, direction: boolean) => {
     setError(false)
-    setRight(0.00)
-    const targetAsString = e.target.value.toString()
-    decimalPlaces(targetAsString) <= 4 && !/[a-zA-Z]/g.test(targetAsString) && selectedCoin  ? calculateResult(targetAsString) : setError(true)
+    var targetAsString = e.target.value.toString()
+    if (targetAsString === "") { targetAsString = "0.000"}
+
+    decimalPlaces(targetAsString) <= 4 && /^-?\d+(?:[.,]\d*?)?$/g.test(targetAsString) && selectedCoin 
+      ? calculateResult(direction, targetAsString)
+      : inputError(direction)
   }
 
   return (
@@ -128,16 +130,16 @@ const App: React.FC = () => {
             <Box variant="layout.cardInner.box" sx={{ backgroundColor: error ? "#D8000C" : "#202231", marginRight: ["0px", "30px", "30px", "30px", "30px"] }}>
               <Box sx={{ display: "flex", width: ["100%"] }}>
                 <Text variant="layout.cardInner.box.text" sx={{ justifyContent: "flex-start" }}>
-                  {direction ? "USD" : (!selectedCoin ? "Please Select A Currency" : selectedCoin.symbol.toUpperCase())}
+                  {!selectedCoin ? "Please Select A Currency" : selectedCoin.symbol.toUpperCase()}
                 </Text>
               </Box>
               <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-                <Input id="inputLeft" variant="layout.input" type="text" onChange={handleInputLeft} defaultValue={"0.0000"} />
+                <Input id="inputLeft" variant="layout.input" type="text" onChange={(e:any) => {handleInput(e, true)}} defaultValue={"0.0000"} />
               </Box>
             </Box>
 
             {/* Notch */}
-            <Box variant="layout.notch" sx={{ backgroundColor: error ? "#D8000C" : "#202231" }} onClick={handleNotch}>
+            <Box variant="layout.notch" sx={{ backgroundColor: error ? "#D8000C" : "#202231" }}>
               <Image src={arrows} variant="layout.notch.icon" />
             </Box>
 
@@ -145,11 +147,11 @@ const App: React.FC = () => {
             <Box variant="layout.cardInner.box" sx={{ backgroundColor: error ? "#D8000C" : "#202231", marginLeft: ["0px", "30px", "30px", "30px", "30px"] }}>
               <Box sx={{ display: "flex", width: "100%" }}>
                 <Text variant="layout.cardInner.box.text" sx={{ justifyContent: "flex-end" }}>
-                  {!direction ? "USD" : (!selectedCoin ? "Please Select A Currency" : selectedCoin.symbol.toUpperCase())}
+                  {"USD"}
                 </Text>
               </Box>
               <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-                <Input id="inputRight" variant="layout.input" type="text" onChange={handleInputRight} defaultValue={"0.0000"} />
+                <Input id="inputRight" variant="layout.input" type="text" onChange={(e:any) => {handleInput(e, false)}} defaultValue={"0.0000"} />
               </Box>
             </Box>
 
@@ -161,15 +163,15 @@ const App: React.FC = () => {
       <Card variant="layout.card" sx={{ height: "auto" }}>
         <Box id="test" variant="layout.cardInnerCurrencies">
           <Box variant="layout.search">
-            <Input id="inputSearch" sx={{ width: "100%"}} type='text' onChange={handleSearchChange} placeholder='Search' />
-            <Button variant="layout.button" sx={{ ml: "1rem", mr: ["0.5rem", "1rem", "1rem", "1rem"], paddingRight: "1.25rem", alignContent: "center", justifyContent: "center", minWidth: "3rem"}} onClick={() => {
+            <Input id="inputSearch" sx={{ width: "100%" }} type='text' onChange={handleSearchChange} placeholder='Search' />
+            <Button variant="layout.button" sx={{ ml: "1rem", mr: ["0.5rem", "1rem", "1rem", "1rem"], paddingRight: "1.25rem", alignContent: "center", justifyContent: "center", minWidth: "3rem" }} onClick={() => {
               if (inputElementSearch) {
                 inputElementSearch.value = ""
                 setSearch("")
               }
             }}>Clear</Button>
           </Box>
-          <CoinTable coins={coinsDisplayed} selectedCoin={selectedCoin} setSelectedCoin={setSelectedCoin} />
+          <CoinTable coins={coinsDisplayed} selectedCoin={selectedCoin} handleSelect={handleSelect} />
         </Box>
       </Card>
 
