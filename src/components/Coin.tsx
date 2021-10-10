@@ -1,32 +1,26 @@
 import { Box, Flex, Image, Text } from '@theme-ui/components';
 import React from 'react';
 import { abbreviateCurrencyAmount } from '../utils';
-import usdt from '../asset_USDT.svg';
-
+import usdt from '../assets/svg/asset_USDT.svg';
 
 export interface CoinInterface {
-  coin: {
-    name: string
-    price: string
-    symbol: string
-    marketcap: string
-    volume: string
-    image: string
-    priceChange: number
-  }
-  selectedCoin: {
-    name: string
-    price: string
-    symbol: string
-    marketcap: string
-    volume: string
-    image: string
-    priceChange: number
-  }
+  name: string
+  price: string
+  symbol: string
+  marketcap: string
+  volume: string
+  image: string
+  priceChange: number
+}
+
+
+export interface CoinRowInterface {
+  coin: CoinInterface
+  selectedCoin: CoinInterface
   setSelectedCoin: Function
 }
 
-export const Coin: React.FC<CoinInterface> = ({
+export const CoinRow: React.FC<CoinRowInterface> = ({
   coin, selectedCoin, setSelectedCoin
 }) => {
   
@@ -58,12 +52,12 @@ export const Coin: React.FC<CoinInterface> = ({
   );
 };
 
-export default Coin;
+export default CoinRow;
 
 
 interface CoinTableInterface {
 
-  coins: any[]
+  coins: CoinInterface[]
   selectedCoin: {
     name: string
     price: string
@@ -102,17 +96,9 @@ export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, se
           </Text>
         </Box>
       </Box>
-      {coins.map((coin: any) => {
+      {coins.map((coin: CoinInterface) => {
         return (
-          <Coin key={coin.id} coin={{
-            name: coin.name,
-            price: coin.current_price,
-            symbol: coin.symbol,
-            marketcap: coin.total_volume,
-            volume: coin.market_cap,
-            image: coin.image,
-            priceChange: coin.price_change_percentage_24h,
-          }} selectedCoin={selectedCoin} setSelectedCoin={setSelectedCoin} />
+          <CoinRow key={coin.name} coin={coin} selectedCoin={selectedCoin} setSelectedCoin={setSelectedCoin} />
         );
       })}
     </>

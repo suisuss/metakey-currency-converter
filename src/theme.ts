@@ -12,6 +12,13 @@ export const theme: Theme = {
 
   layout: {
 
+    search: {
+      marginBottom: "1rem",
+      display: "flex",
+      justifyContent: "center",
+      alignContent: "center",
+    },
+
     input: {
       textAlign: "center",
       width: ["100%", "100%", "100%"],
