@@ -70,7 +70,7 @@ export const theme: Theme = {
     coinRow: {
       display: "flex",
       flexDirection: "row",
-      height: ["70px", "70px", "70px"],
+      height: ["65px", "65px", "65px"],
       maxWidth: "100%",
 
       text: {

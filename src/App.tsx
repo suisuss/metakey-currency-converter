@@ -37,9 +37,10 @@ const App: React.FC = () => {
   const fetchData = (first: boolean) => {
 
     axios.get(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false'
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false'
     )
       .then((res: any) => {
+        console.log(res.data.length)
         setAllCoins(res.data.map((coin: any) => {
           return {
             name: coin.name,
@@ -71,9 +72,11 @@ const App: React.FC = () => {
   const handleSelect = (coin: CoinInterface) => {
 
     const amountAsFloat = parseFloat(inputElementLeft.value);
+    const value = parseFloat(inputElementRight.value)
     const selectedCoinPriceAsFloat = parseFloat(coin.price);
     if (amountAsFloat > 0.00 && inputElementRight) {
-      inputElementRight.value = (selectedCoinPriceAsFloat * amountAsFloat).toFixed(4)
+      inputElementRight.value = (selectedCoinPriceAsFloat * (value /selectedCoinPriceAsFloat)).toFixed(4)
+      inputElementLeft.value = (value /selectedCoinPriceAsFloat ).toFixed(4)
     }
     setSelectedCoin(coin)
   }
