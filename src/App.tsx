@@ -20,9 +20,9 @@ const App: React.FC = () => {
   const inputElementRight = document.getElementById('inputRight') as HTMLInputElement;
   const inputElementSearch = document.getElementById('inputSearch') as HTMLInputElement;
 
-  const divRef = useRef(null);
-  const divRef1 = useRef(null);
-  const divRef2 = useRef(null);
+  const TitleRef = useRef(null);
+  const ConverterRef = useRef(null);
+  const CurrenciesRef = useRef(null);
 
   useEffect(() => {
     if (inputElementLeft && inputElementRight) {
@@ -91,16 +91,19 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchData(true)
-    setInterval(() => fetchData(false), 6000)
+    const intervalID = setInterval(() => fetchData(false), 6000)
 
-    gsap.to([divRef.current, divRef1.current, divRef2.current], 3, {
+    gsap.to([TitleRef.current, ConverterRef.current, CurrenciesRef.current], 3, {
       opacity: 1,
       y: animationOffset,
       ease: Power3.easeOut,
       stagger: {each: 0.25}
     })
 
-    // eslint-disable-next-line
+    return () => {
+      clearInterval(intervalID)
+    }
+
   }, []);
 
   const calculateResult = (direction: boolean, amount: string) => {
@@ -145,10 +148,10 @@ const App: React.FC = () => {
   return (
     <Container variant="layout.container">
 
-      <Text ref={divRef} variant="layout.title" sx={{top: -animationOffset, position: "relative", justifyContent: "center", alignContent: "center", width: "100%", ml: "1rem", opacity: 0 }}>METAKEY CURRENCY CONVERTER</Text>
+      <Text ref={TitleRef} variant="layout.title" sx={{top: -animationOffset, position: "relative", justifyContent: "center", alignContent: "center", width: "100%", ml: "1rem", opacity: 0 }}>METAKEY CURRENCY CONVERTER</Text>
 
       {/*Converter*/}
-      <Card ref={divRef1} variant="layout.card" sx={{ top: -animationOffset, position: "relative", opacity: 0, alignItems: "center", justifyContent: "center", m: ["1rem", "1.5rem"] }}>
+      <Card ref={ConverterRef} variant="layout.card" sx={{ top: -animationOffset, position: "relative", opacity: 0, alignItems: "center", justifyContent: "center", m: ["1rem", "1.5rem"] }}>
         <Box variant="layout.cardInner">
           <Box variant="layout.cardInner.converterAlign">
             {/* Left/Top */}
@@ -205,7 +208,7 @@ const App: React.FC = () => {
       </Card>
 
       {/*Currencies*/}
-      <Card ref={divRef2} variant="layout.card" sx={{ top: -animationOffset, position: "relative", height: "auto", opacity: 0 }}>
+      <Card ref={CurrenciesRef} variant="layout.card" sx={{ top: -animationOffset, position: "relative", height: "auto", opacity: 0 }}>
         <Box id="test" variant="layout.cardInnerCurrencies">
           <Box variant="layout.search">
             <Input id="inputSearch" sx={{ width: "100%" }} type='text' onChange={handleSearchChange} placeholder='Search' />
