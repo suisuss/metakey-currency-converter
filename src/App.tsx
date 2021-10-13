@@ -87,8 +87,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (inputElementLeft && inputElementRight) {
-      inputElementLeft.value = inputElementLeft.defaultValue
-      inputElementRight.value = inputElementRight.defaultValue
+      inputElementLeft.value = ""
+      inputElementRight.value = ""
     }
   }, [inputElementLeft, inputElementRight])
 
@@ -168,11 +168,13 @@ const App: React.FC = () => {
     const coinSelectedPriceAsFloat = parseFloat(state.coins[coinSelected].price);
 
     if (inputElementRight && inputElementLeft && coinSelectedPriceAsFloat >= 0.00 && amountAsFloat >= 0.00) {
-      if (direction) {
-        inputElementRight.value = (coinSelectedPriceAsFloat * amountAsFloat).toFixed(4)
-      } else {
-        inputElementLeft.value = (amountAsFloat / coinSelectedPriceAsFloat).toFixed(4)
-      }
+      direction
+        ? inputElementRight.value = (coinSelectedPriceAsFloat * amountAsFloat).toFixed(4)
+        : inputElementLeft.value = (amountAsFloat / coinSelectedPriceAsFloat).toFixed(4)
+    } else {
+      direction
+        ? inputElementRight.value = ""
+        : inputElementLeft.value = ""
     }
   }
 
@@ -200,13 +202,13 @@ const App: React.FC = () => {
       data: true
     })
     direction 
-      ? inputElementRight.value = inputElementRight.defaultValue
-      : inputElementLeft.value = inputElementLeft.defaultValue
+      ? inputElementRight.value = ""
+      : inputElementLeft.value = ""
   }
 
   const handleConverterReset = () => {
-    inputElementRight.value = inputElementRight.defaultValue
-    inputElementLeft.value = inputElementLeft.defaultValue
+    inputElementRight.value = ""
+    inputElementLeft.value = ""
     dispatch({
       type: "SET_USER_ERROR",
       data: false
@@ -219,10 +221,9 @@ const App: React.FC = () => {
       data: false
     })
     var targetAsString = e.target.value.toString()
-    if (targetAsString === "") { targetAsString = "0.000" }
     if (targetAsString.includes('-')) { handleDisplayError(direction) }
 
-    (decimalPlaces(targetAsString) <= 4 && /^-?\d+(?:[.,]\d*?)?$/g.test(targetAsString) && targetAsString.length <= 15)
+    (decimalPlaces(targetAsString) <= 4)
       ? calculateResult(direction, targetAsString)
       : handleDisplayError(direction)
   }
@@ -254,7 +255,7 @@ const App: React.FC = () => {
                   backgroundColor: "transparent",
                   color: "white"
 
-                }} type="number" onChange={(e: any) => { handleInput(e, true) }} defaultValue={"0.0000"} />
+                }} type="number" onChange={(e: any) => { handleInput(e, true) }} placeholder='0.0000' />
               </Box>
             </Box>
 
@@ -281,7 +282,7 @@ const App: React.FC = () => {
                   backgroundColor: "transparent",
                   color: "white"
 
-                }} type="number" onChange={(e: any) => { handleInput(e, false) }} defaultValue={"0.0000"} />
+                }} type="number" onChange={(e: any) => { handleInput(e, false) }} placeholder="0.0000" />
               </Box>
             </Box>
 
