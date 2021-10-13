@@ -5,6 +5,7 @@ import usdt from '../assets/svg/asset_USDT.svg';
 import gsap, { Power3 } from 'gsap';
 
 export interface CoinInterface {
+  index: number
   name: string
   price: string
   symbol: string
@@ -18,19 +19,11 @@ export interface CoinInterface {
 interface CoinTableInterface {
 
   coins: CoinInterface[]
-  selectedCoin: {
-    name: string
-    price: string
-    symbol: string
-    marketcap: string
-    volume: string
-    image: string
-    priceChange: number
-  }
+  coinSelected: number
   handleSelect: Function
 }
 
-export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, handleSelect}) => {
+export const CoinTable: React.FC<CoinTableInterface> = ({coins, coinSelected, handleSelect}) => {
   return (
     <>
       <Box variant="layout.coinRow" sx={{ maxHeight: "40px", mb: "1rem"}}>
@@ -57,8 +50,9 @@ export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, ha
         </Box>
       </Box>
       {coins.map((coin: CoinInterface) => {
-        return (
-          <CoinRow key={coin.name} coin={coin} selectedCoin={selectedCoin} handleSelect={handleSelect} />
+        return (coinSelected === coin.index 
+          ? <CoinRow key={coin.name} coin={coin} selected={true} handleSelect={handleSelect} />
+          : <CoinRow key={coin.name} coin={coin} selected={false} handleSelect={handleSelect} />
         );
       })}
     </>
@@ -67,12 +61,12 @@ export const CoinTable: React.FC<CoinTableInterface> = ({coins, selectedCoin, ha
 
 export interface CoinRowInterface {
   coin: CoinInterface
-  selectedCoin: CoinInterface
+  selected: boolean
   handleSelect: Function
 }
 
 export const CoinRow: React.FC<CoinRowInterface> = ({
-  coin, selectedCoin, handleSelect
+  coin, selected, handleSelect
 }) => {
 
   const coinRowRef = useRef(null);
@@ -87,7 +81,7 @@ export const CoinRow: React.FC<CoinRowInterface> = ({
   }, [])
   
   return (
-    <Box ref={coinRowRef} variant="layout.coinRow" sx={{ opacity: 0, position: "relative", top: animationOffset,  backgroundColor: selectedCoin?.symbol === coin.symbol ? "#202231" : "transparent", marginBottom: "0.5rem", border: selectedCoin?.symbol === coin.symbol ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { handleSelect(coin) }}>
+    <Box ref={coinRowRef} variant="layout.coinRow" sx={{ opacity: 0, position: "relative", top: animationOffset,  backgroundColor: selected ? "#202231" : "transparent", marginBottom: "0.5rem", border: selected ? "3px solid white" : null, borderRadius: "18px", cursor: "pointer" }} onClick={() => { handleSelect(coin) }}>
       <Flex sx={{ ml: "1rem", diplay: "flex", alignItems: "center", justifyContent: "flex-start" }}>
         <Image src={coin.symbol !== 'usdt' ? coin.image : usdt} sx={{ borderRadius: "50%", maxWidth: ["25px", "30px", "35px", "40px"], maxHeight: ["25px", "30px", "35px", "40px"], diplay: "flex", flex: 1 }} alt='crypto' />
       </Flex>
