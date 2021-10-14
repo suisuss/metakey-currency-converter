@@ -154,7 +154,7 @@ const App: React.FC = () => {
     const amountAsFloat = parseFloat(inputElementLeft.value);
     const value = parseFloat(inputElementRight.value)
     const coinSelectedPriceAsFloat = parseFloat(coin.price);
-    if (amountAsFloat > 0.00 && inputElementRight) {
+    if (amountAsFloat >= 0.00 && inputElementRight) {
       inputElementRight.value = (coinSelectedPriceAsFloat * (value / coinSelectedPriceAsFloat)).toFixed(4)
       inputElementLeft.value = (value / coinSelectedPriceAsFloat).toFixed(4)
     }
